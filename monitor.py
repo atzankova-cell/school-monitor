@@ -1,9 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import time
 import smtplib
 from email.mime.text import MIMEText
-from datetime import datetime
 
 SCHOOLS = [
     "https://npmg.org",
@@ -23,32 +21,19 @@ SCHOOLS = [
 
 KEYWORDS = [
     "свободни места",
-    "IX клас",
     "9 клас",
+    "IX клас",
     "преместване",
     "прием",
     "старши класове"
 ]
 
-def check_site(url):
-    try:
-        r = requests.get(url, timeout=10)
-        soup = BeautifulSoup(r.text, "html.parser")
-        text = soup.get_text().lower()
+EMAIL = "a.tzankova@gmail.com"
+PASSWORD = "nbpzzqbrrhlpxixz"
+TO_EMAIL = "a.tzankova@gmail.com"
 
-        for word in KEYWORDS:
-            if word.lower() in text:
-                return True, word, url
 
-    except:
-        pass
-
-    return False, None, url
-  def send_email(subject, body):
-    EMAIL = "a.tzankova@gmail.com"
-    PASSWORD = "nbpzzqbrrhlpxixz"
-    TO_EMAIL = "a.tzankova@gmail.com"
-
+def send_email(subject, body):
     msg = MIMEText(body, "plain", "utf-8")
     msg["Subject"] = subject
     msg["From"] = EMAIL
@@ -57,6 +42,23 @@ def check_site(url):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
         server.login(EMAIL, PASSWORD)
         server.send_message(msg)
+
+
+def check_site(url):
+    try:
+        r = requests.get(url, timeout=10)
+        r.raise_for_status()
+
+        text = r.text.lower()
+
+        for word in KEYWORDS:
+            if word.lower() in text:
+                return True, word, url
+
+    except Exception as e:
+        print(f"Error {url}: {e}")
+
+    return False, None, url
 
 
 def run_check():
@@ -69,7 +71,7 @@ def run_check():
 
     if results:
         send_email(
-            "Училищен монитор: НОВА ОБЯВА",
+            "School Monitor - нова обява",
             "\n\n".join(results)
         )
 
