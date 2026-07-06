@@ -45,9 +45,9 @@ def check_site(url):
 
     return False, None, url
   def send_email(subject, body):
-    EMAIL = "YOUR_EMAIL@gmail.com"
-    PASSWORD = "YOUR_APP_PASSWORD"
-    TO_EMAIL = "YOUR_EMAIL@gmail.com"
+    EMAIL = "a.tzankova@gmail.com"
+    PASSWORD = "nbpzzqbrrhlpxixz"
+    TO_EMAIL = "a.tzankova@gmail.com"
 
     msg = MIMEText(body, "plain", "utf-8")
     msg["Subject"] = subject
